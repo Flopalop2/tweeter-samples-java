@@ -1,54 +1,53 @@
 package edu.byu.cs.tweeter.client.model.service;
 
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTaskUtils;
+import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.LoginTask;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.LoginTaskHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.LogoutTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.AuthenticationHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetUserHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.NotificationHandler;
+import edu.byu.cs.tweeter.client.model.service.observer.AuthenticationObserverT;
+import edu.byu.cs.tweeter.client.model.service.observer.NotificationObserver;
+import edu.byu.cs.tweeter.client.presenter.PagedPresenter;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
 
-/**
- * Contains the business logic to support the login operation.
- */
-public class UserService {
+public class UserService extends Service {
 
-    public static final String URL_PATH = "/login";
+    public void getUser(AuthToken currUserAuthToken, String userAlias, PagedPresenter.GetUserObserver getUserObserver) {
+        GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
+                userAlias, new GetUserHandler(getUserObserver));
+        executeTask(getUserTask);
+    }
 
-    /**
-     * An observer interface to be implemented by observers who want to be notified when
-     * asynchronous operations complete.
-     */
-    public interface LoginObserver {
+    //public interface LogoutObserver extends NotificationObserver {}
+
+    public void logoutUser(NotificationObserver logoutObserver) {
+        LogoutTask logoutTask = new LogoutTask(Cache.getInstance().getCurrUserAuthToken(), new NotificationHandler(logoutObserver));
+        executeTask(logoutTask);
+    }
+
+    /*public interface LoginObserver extends ServiceObserver{
+        void handleSuccess(User user);
+    }*/
+
+    public void logIn(String alias, String password, AuthenticationObserverT loginObserver) {
+        // Send the login request.
+        LoginTask loginTask = new LoginTask(alias,
+                password,
+                new AuthenticationHandler(loginObserver));
+        executeTask(loginTask);
+    }
+
+    /*public interface RegisterObserver extends ServiceObserver {
         void handleSuccess(User user, AuthToken authToken);
-        void handleFailure(String message);
-        void handleException(Exception exception);
-    }
+    }*/
 
-    /**
-     * Creates an instance.
-     *
-     */
-     public UserService() {
-     }
+    public void registerUser(String firstName, String lastName, String alias, String password, String imageBytesBase64, AuthenticationObserverT registerObserver) {
+        RegisterTask registerTask = new RegisterTask(firstName, lastName,
+                alias, password, imageBytesBase64, new AuthenticationHandler(registerObserver));
 
-    /**
-     * Makes an asynchronous login request.
-     *
-     * @param username the user's name.
-     * @param password the user's password.
-     */
-    public void login(String username, String password, LoginObserver observer) {
-        LoginTask loginTask = getLoginTask(username, password, observer);
-        BackgroundTaskUtils.runTask(loginTask);
-    }
-
-    /**
-     * Returns an instance of {@link LoginTask}. Allows mocking of the LoginTask class for
-     * testing purposes. All usages of LoginTask should get their instance from this method to
-     * allow for proper mocking.
-     *
-     * @return the instance.
-     */
-    LoginTask getLoginTask(String username, String password, LoginObserver observer) {
-        return new LoginTask(this, username, password, new LoginTaskHandler(observer));
+        executeTask(registerTask);
     }
 }

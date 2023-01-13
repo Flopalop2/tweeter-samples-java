@@ -7,11 +7,12 @@ import edu.byu.cs.tweeter.model.domain.User;
  * The Cache class stores globally accessible data.
  */
 public class Cache {
-    private static final Cache instance = new Cache();
+    private static Cache instance = new Cache();
 
     public static Cache getInstance() {
         return instance;
     }
+
 
     /**
      * The currently logged-in user.
@@ -20,7 +21,7 @@ public class Cache {
     /**
      * The auth token for the current user session.
      */
-    private AuthToken currUserAuthToken;
+    private static AuthToken currUserAuthToken = null;
 
     private Cache() {
         initialize();
@@ -28,7 +29,7 @@ public class Cache {
 
     private void initialize() {
         currUser = new User(null, null, null);
-        currUserAuthToken = null;
+        //currUserAuthToken = null;
     }
 
     public void clearCache() {
@@ -43,11 +44,15 @@ public class Cache {
         this.currUser = currUser;
     }
 
-    public AuthToken getCurrUserAuthToken() {
+    public static AuthToken getCurrUserAuthToken() {
         return currUserAuthToken;
     }
 
-    public void setCurrUserAuthToken(AuthToken currUserAuthToken) {
-        this.currUserAuthToken = currUserAuthToken;
+    public static void setCurrUserAuthToken(AuthToken currUserAuthToken) {
+        Cache.currUserAuthToken = currUserAuthToken;
+    }
+
+    public static void setInstance(Cache instance) {
+        Cache.instance = instance;
     }
 }

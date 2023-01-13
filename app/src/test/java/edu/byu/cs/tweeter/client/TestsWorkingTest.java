@@ -1,8 +1,8 @@
 package edu.byu.cs.tweeter.client;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
@@ -17,14 +17,14 @@ public class TestsWorkingTest {
         }
     }
 
-    @BeforeEach
+    @Before
     public void setup() {
         // Called before each test, set up any common code between tests
     }
 
     @Test
     public void testAsserts() {
-        Assertions.assertTrue(true);
+        Assert.assertTrue(true);
     }
     @Test
     public void testMockitoSpy() {
