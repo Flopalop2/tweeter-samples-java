@@ -35,10 +35,22 @@ public abstract class PagedTask<T> extends AuthenticatedTask {
      */
     private final T lastItem;
 
+    public void setItems(List<T> items) {
+        this.items = items;
+    }
+
     /**
      * The items returned in the current page of results.
      */
     private List<T> items;
+
+    public boolean isHasMorePages() {
+        return hasMorePages;
+    }
+
+    public void setHasMorePages(boolean hasMorePages) {
+        this.hasMorePages = hasMorePages;
+    }
 
     /**
      * Indicates whether there are more pages of items that can be retrieved on subsequent calls.

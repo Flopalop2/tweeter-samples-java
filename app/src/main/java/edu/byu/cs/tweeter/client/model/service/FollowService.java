@@ -22,6 +22,7 @@ public class FollowService extends Service{
 
     //public interface GetFollowingObserver extends PagedServiceObserver<User> { }
 
+    public static final String URL_PATH = "/getfollowing";
 
     public void getFollowing(AuthToken currUserAuthToken, User user, int pageSize, User lastFollowee,
                              PagedServiceObserver<User> getFollowingObserver) {

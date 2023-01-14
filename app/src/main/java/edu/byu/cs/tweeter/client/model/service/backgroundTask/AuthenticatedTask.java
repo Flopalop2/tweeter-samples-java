@@ -6,6 +6,10 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 
 public abstract class AuthenticatedTask extends BackgroundTask {
 
+    public AuthToken getAuthToken() {
+        return authToken;
+    }
+
     /**
      * Auth token for logged-in user.
      * This user is the "follower" in the relationship.
